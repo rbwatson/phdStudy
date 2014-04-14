@@ -1,0 +1,45 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+	font-family:Arial, Helvetica, sans-serif; 
+	font-size:12px;
+}
+
+p#pageTitle { font-weight:bold; font-size: 200%; }
+
+p#pageVersion{ font-size: 80% }
+p#pageDescription{ }
+
+p.sectionHeading{ 
+	font-size: 150%; 
+	font-weight:bold; 
+	background-color:#ddd; 
+	border-top: 3px #000 solid;
+	padding: 10px 0 4px 1em;
+}
+p#syntax{ 
+	font-size: 120%;
+	font-family:"Lucida Console", Monaco, monospace;
+	border-style: solid;
+	border-width: thin;
+	margin-left: 1em;
+	padding: 10px 5px 10px 1.0em;
+}
+p.descriptionText{ margin-left: 3.0em;  }
+p.paramName{ margin-left: 1em; font-style:italic; }
+p.paramDescription{ margin-left: 3.0em; }
+p.paramWarning{ 
+	margin-left: 10em; 
+	margin-right: 10em;
+	font-size: 120%; 
+	font-weight:bold; 
+	padding: 10px 10px 10px 10px;
+	background-color:#ddd;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+}
+p.bodyText{ margin-left: 1em;  }
+li.relatedTopic{ }
+span.fnName{ font-family: "Lucida Console", Monaco, monospace; }
+

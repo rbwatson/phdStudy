@@ -67,3 +67,97 @@ CREATE TABLE IF NOT EXISTS phd_log_gratuity (
   UNIQUE KEY gratuityLogId (gratuityLogId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT 'Stores participant information used for gratuity fulfillment.';
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'phd_log_event'
+--
+
+DROP TABLE IF EXISTS phd_log_event;
+CREATE TABLE IF NOT EXISTS phd_log_event (
+  logEventId bigint(20) unsigned NOT NULL  AUTO_INCREMENT COMMENT 'Unique record ID.',
+  recordType enum('open','transition')  COLLATE utf8_unicode_ci  NOT NULL   COMMENT 'The type of log record. Possible values are: "open" - records page loads; "transition" - records navigation activity.',
+  surveySessionId varchar(255)  COLLATE utf8_unicode_ci  NOT NULL   COMMENT 'The participant session in which the activity occurred',
+  stepIndex int(10) unsigned NOT NULL   COMMENT 'The index of the protocol step in which the activity ocurred. (page number of survey)',
+  responseTime bigint(20) unsigned  DEFAULT NULL COMMENT 'The response time ',
+  imageY int(10) unsigned  DEFAULT NULL COMMENT 'X-coord of click',
+  imageX int(10) unsigned  DEFAULT NULL COMMENT 'Y-coord of click',
+  imageUrl varchar(1024)  COLLATE utf8_unicode_ci   DEFAULT NULL COMMENT 'Image URL clicked',
+  dateCreated datetime  NOT NULL   COMMENT 'The timestamp written when the record was created.',
+  dateModified timestamp  NOT NULL  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  COMMENT 'Time read from server that the activity took place. Stored in server time zone.',
+  PRIMARY KEY (logEventId),
+  UNIQUE KEY logEventId (logEventId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT 'Stores events sent by the site being tested.';
+
+--
+-- Table structure for table 'phd_log_session'
+--
+
+DROP TABLE IF EXISTS phd_log_session;
+CREATE TABLE IF NOT EXISTS phd_log_session (
+  sessionId bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique record and study session ID',
+  studyId bigint(20) unsigned NOT NULL  COMMENT 'ID of study that defined this participant session',
+  stepId int(10) unsigned NOT NULL  COMMENT 'The task step in this session. Task 0 = the session overall, Task 1-n = a task step in the study.',
+  surveySessionId varchar(255)  COLLATE utf8_unicode_ci  NOT NULL   COMMENT 'The participant session ID',
+  startTime datetime  NOT NULL   COMMENT 'The time, in server local time, that this task/variation began',
+  endTime datetime   DEFAULT NULL COMMENT 'The time, in server local time, that this task/variation ended',
+  variationId int(10) unsigned NOT NULL  COMMENT 'The variation selected for this session or task',
+  questionSeqMask bigint(20) unsigned  DEFAULT NULL COMMENT 'The question sequence to use for this participant where bit 1 = task 1, etc. and 0=no-answer question 1 = answerable question',
+  questionSeqStep int(10) unsigned NOT NULL  COMMENT 'The current task in the sequence',
+  dateCreated datetime  NOT NULL  COMMENT 'The date the record was created in server local time.',
+  dateModified timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  COMMENT 'The date the record was last modified in server local time.',
+  PRIMARY KEY (sessionId),
+  UNIQUE KEY sessionId (sessionId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT 'Stores data about a participants progress through a session.';
+
+--
+-- Table structure for table 'phd_study_step_config'
+--
+
+DROP TABLE IF EXISTS phd_study_step_config;
+CREATE TABLE IF NOT EXISTS phd_study_step_config (
+  studyStepConfigId bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique record ID',
+  studyId bigint(20) unsigned NOT NULL DEFAULT '0'  COMMENT 'ID of study that defined this session',
+  studyStepId bigint(20) unsigned NOT NULL DEFAULT '0'  COMMENT 'ID of the study step configuration that this record references',
+  stepIndex int(10) unsigned NOT NULL DEFAULT '0'  COMMENT 'Step sequence',
+  stepQuestion0Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'The full question that is not answered by the page, formatted as HTML',
+  stepQuestion1Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'The full question that is answered by the page, formatted as HTML',
+  stepPrompt0Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'The prompt for the question that is not answered by the page, formatted as HTML',
+  stepPrompt1Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'The prompt for the question that is answered by the page, formatted as HTML',
+  pageVar0Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 0 - page as HTML',
+  pageImgVar0Url varchar(1024)  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 0 - page as image',
+  pageVar1Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 1 - page as HTML',
+  pageImgVar1Url varchar(1024)  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 1 - page as image',
+  pageVar2Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 2 - page as HTML',
+  pageImgVar2Url varchar(1024)  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 2 - page as image',
+  pageVar3Html longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 3 - page as HTML',
+  pageImgVar3Url varchar(1024)  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 3 - page as image',
+  dateCreated datetime  NOT NULL  COMMENT 'The date the record was created in server local time.',
+  dateModified timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  COMMENT 'The date the record was last updated in server local time.',
+  PRIMARY KEY (studyStepConfigId),
+  UNIQUE KEY studyStepConfigId (studyStepConfigId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT 'Stores data about a participants progress through a session.';
+
+
+--
+-- Table structure for table 'phd_session_step_info'
+--
+
+DROP TABLE IF EXISTS phd_session_step_info;
+CREATE TABLE IF NOT EXISTS phd_session_step_info (.
+  sessionStepInfoId bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique record ID',
+  sessionId bigint(20) unsigned NOT NULL  COMMENT 'Unique record and study session ID',
+  studyId bigint(20) unsigned NOT NULL DEFAULT '0'  COMMENT 'ID of study that defined this session',
+  studyStepId bigint(20) unsigned NOT NULL DEFAULT '0'  COMMENT 'ID of the study step configuration that this record references',
+  surveySessionId varchar(255)  COLLATE utf8_unicode_ci  NOT NULL   COMMENT 'The participant session ID',
+  stepQuestionHtml longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'The full question that is not answered by the page, formatted as HTML',
+  stepPromptHtml longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'The prompt for the question that is not answered by the page, formatted as HTML',
+  pageHtml longtext  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 0 - page as HTML',
+  pageImg varchar(1024)  COLLATE utf8_unicode_ci   DEFAULT NULL  COMMENT 'Variation 0 - page as image',
+  startTime datetime  NOT NULL   COMMENT 'The time, in server local time, that this task/variation began',
+  endTime datetime   DEFAULT NULL COMMENT 'The time, in server local time, that this task/variation ended',
+  dateCreated datetime  NOT NULL  COMMENT 'The date the record was created in server local time.',
+  dateModified timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  COMMENT 'The date the record was last updated in server local time.',
+  PRIMARY KEY (sessionStepInfoId),
+  UNIQUE KEY sessionStepInfoId (sessionStepInfoId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 COMMENT 'Stores data about a single step in a participants session.';
